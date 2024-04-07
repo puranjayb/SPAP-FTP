@@ -13,7 +13,7 @@ router.get('/getTotal', crudController.getTotal);
 
 router.delete('/deleteByID/:id', crudController.deleteExpense);
 
-router.put('/updateIncomeByID/:id/:category/:income/:description', crudController.updateExpense);
+router.put('/updateIncomeByID/:id/:category/:income/:description', crudController.updateIncome);
 router.put('/updateExpenseByID/:id/:category/:expense/:description', crudController.updateExpense);
 
 module.exports = router;
