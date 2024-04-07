@@ -158,3 +158,5 @@ updateIncome = (req, res) => {
         }
     );
 }
+
+module.exports = {addExpense, addIncome, getOneDayTotal, getOneWeekTotal, getOneMonthTotal, getOneYearTotal, getTotal, deleteExpense, updateExpense, updateIncome}
