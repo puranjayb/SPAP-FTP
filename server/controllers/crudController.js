@@ -4,12 +4,14 @@ addExpense = (req, res) => {
     const { category, expense, description } = req.params;
     connection.query(
         'INSERT INTO finances (category, amount, description) VALUES (?, ?, ?)',
-        [category, -1*expense, description],
+        [category, -1 * expense, description],
         (err, results) => {
             if (err) {
-                throw err;
+                console.error('Error executing query:', err);
+                return res.status(500).json({ error: 'Internal Server Error' });
             }
-            res.send(results);
+            console.log('Query executed successfully');
+            res.status(200).json({ success: true, results });
         }
     );
 }
