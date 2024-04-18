@@ -1,26 +1,19 @@
-const connection = require('../config/dbConfig');
+const connection = require(`../config/dbConfig`);
 
 addExpense = (req, res) => {
-    const { category, expense, description } = req.params;
+    const { category, amount, description } = req.body;
+    
     connection.query(
-        'INSERT INTO finances (category, amount, description) VALUES (?, ?, ?)',
-        [category, -1 * expense, description],
-        (err, results) => {
-            if (err) {
-                console.error('Error executing query:', err);
-                return res.status(500).json({ error: 'Internal Server Error' });
-            }
-            console.log('Query executed successfully');
-            res.status(200).json({ success: true, results });
+
         }
     );
 }
 
 addIncome = (req, res) => {
-    const { category, income, description } = req.params;
+    const { category, amount, description } = req.body;
     connection.query(
-        'INSERT INTO finances (category, amount, description) VALUES (?, ?, ?)',
-        [category, income, description],
+        `INSERT INTO finances (category, amount, description) VALUES (?, ?, ?);`,
+        [category, amount, description],
         (err, results) => {
             if (err) {
                 throw err;
@@ -32,13 +25,14 @@ addIncome = (req, res) => {
 
 getOneDayTotal = (req, res) => {
     connection.query(
-        ```SELECT *, 
+        `SELECT
+        id, category, amount, description,
         SUM(amount) AS total,
         (SELECT SUM(amount) FROM finances WHERE amount < 0) AS expenses,
         (SELECT SUM(amount) FROM finances WHERE amount >= 0) AS income
-        FROM finances 
-        WHERE DATE(date) = CURDATE();
-        ```,
+        FROM finances
+        WHERE DATE(date_of_purchase) = CURDATE()
+        GROUP BY id, category, description;`,
         (err, results) => {
             if (err) {
                 throw err;
@@ -50,13 +44,13 @@ getOneDayTotal = (req, res) => {
 
 getOneWeekTotal = (req, res) => {
     connection.query(
-        ```SELECT *, 
+        `SELECT *, 
         SUM(amount) AS total,
         (SELECT SUM(amount) FROM finances WHERE amount < 0) AS expenses,
         (SELECT SUM(amount) FROM finances WHERE amount >= 0) AS income
         FROM finances 
-        WHERE WEEK(date) = WEEK(CURDATE());
-        ```,
+        WHERE YEARWEEK(date_of_purchase) = YEARWEEK(NOW())
+        GROUP BY id, category, description;`,
         (err, results) => {
             if (err) {
                 throw err;
@@ -68,13 +62,13 @@ getOneWeekTotal = (req, res) => {
 
 getOneMonthTotal = (req, res) => {
     connection.query(
-        ```SELECT *, 
+        `SELECT *, 
         SUM(amount) AS total,
         (SELECT SUM(amount) FROM finances WHERE amount < 0) AS expenses,
         (SELECT SUM(amount) FROM finances WHERE amount >= 0) AS income
         FROM finances 
-        WHERE MONTH(date) = MONTH(CURDATE());
-        ```,
+        WHERE MONTH(date_of_purchase) = MONTH(CURDATE()) AND YEAR(date_of_purchase) = YEAR(CURDATE())
+        GROUP BY id, category, description;`,
         (err, results) => {
             if (err) {
                 throw err;
@@ -86,13 +80,13 @@ getOneMonthTotal = (req, res) => {
 
 getOneYearTotal = (req, res) => {
     connection.query(
-        ```SELECT *, 
+        `SELECT *, 
         SUM(amount) AS total,
         (SELECT SUM(amount) FROM finances WHERE amount < 0) AS expenses,
         (SELECT SUM(amount) FROM finances WHERE amount >= 0) AS income
         FROM finances 
-        WHERE YEAR(date) = YEAR(CURDATE());
-        ```,
+        WHERE YEAR(date_of_purchase) = YEAR(CURDATE())
+        GROUP BY id, category, description;`,
         (err, results) => {
             if (err) {
                 throw err;
@@ -104,12 +98,12 @@ getOneYearTotal = (req, res) => {
 
 getTotal = (req, res) => {
     connection.query(
-        ```SELECT *, 
+        `SELECT *, 
         SUM(amount) AS total,
         (SELECT SUM(amount) FROM finances WHERE amount < 0) AS expenses,
         (SELECT SUM(amount) FROM finances WHERE amount >= 0) AS income
-        FROM finances;
-        ```,
+        FROM finances
+        GROUP BY id, category, description;`,
         (err, results) => {
             if (err) {
                 throw err;
@@ -120,9 +114,9 @@ getTotal = (req, res) => {
 }
 
 deleteExpense = (req, res) => {
-    const { id } = req.params;
+    const { id } = req.body;
     connection.query(
-        'DELETE FROM finances WHERE id = ?',
+        `DELETE FROM finances WHERE id = ?;`,
         [id],
         (err, results) => {
             if (err) {
@@ -134,10 +128,10 @@ deleteExpense = (req, res) => {
 }
 
 updateExpense = (req, res) => {
-    const { id, category, amount, description } = req.params;
+    const { id, category, amount, description } = req.body;
     connection.query(
-        'UPDATE finances SET category = ?, amount = ?, description = ? WHERE id = ?',
-        [category, amount, description, id],
+        `UPDATE finances SET category = ?, amount = ?, description = ? WHERE id = ?;`,
+        [category, -1 * amount, description, id],
         (err, results) => {
             if (err) {
                 throw err;
@@ -148,9 +142,9 @@ updateExpense = (req, res) => {
 }
 
 updateIncome = (req, res) => {
-    const { id, category, amount, description } = req.params;
+    const { id, category, amount, description } = req.body;
     connection.query(
-        'UPDATE finances SET category = ?, amount = ?, description = ? WHERE id = ?',
+        `UPDATE finances SET category = ?, amount = ?, description = ? WHERE id = ?;`,
         [category, amount, description, id],
         (err, results) => {
             if (err) {
@@ -161,4 +155,4 @@ updateIncome = (req, res) => {
     );
 }
 
-module.exports = {addExpense, addIncome, getOneDayTotal, getOneWeekTotal, getOneMonthTotal, getOneYearTotal, getTotal, deleteExpense, updateExpense, updateIncome}
+module.exports = { addExpense, addIncome, getOneDayTotal, getOneWeekTotal, getOneMonthTotal, getOneYearTotal, getTotal, deleteExpense, updateExpense, updateIncome };
