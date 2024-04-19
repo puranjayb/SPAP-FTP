@@ -43,7 +43,6 @@ function Activities() {
     }
   ]
 
-
   return (
     <div className='w-full flex flex-col gap-4 p-5 text-gray-300 rounded-3xl shadow-xl bg-[#1C2949]'>
       <h2 className='text-2xl font-semibold'>Activities</h2>

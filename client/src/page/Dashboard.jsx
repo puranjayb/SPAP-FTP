@@ -3,6 +3,8 @@ import Navbar from '../containers/Navbar'
 import OverviewCard from '../containers/OverviewCard'
 import ExpenseStatistics from '../containers/ExpenseStatistics'
 import Activities from '../containers/Activities'
+import AddExpenses from '../containers/AddExpenses'
+import FriendsCard from '../containers/FriendsCard'
 
 function Dashboard() {
   return (
@@ -19,6 +21,10 @@ function Dashboard() {
           <Activities />
         </div>
       </div>
+      <div className='flex justify-between mt-6'>
+          <AddExpenses />
+          <FriendsCard />
+        </div>
     </section>
   )
 }
