@@ -24,7 +24,7 @@ function OverviewCard() {
     <div className='flex flex-col gap-4 p-5 text-gray-300 rounded-3xl shadow-xl bg-[#1C2949]'>
       <p className='text-2xl text-left font-semibold'>Overview</p>
 
-      <div className='flex justify-between gap-10'>
+      <div className='flex justify-between gap-16'>
         {moneyData.map((data, index) => (
           <div key={index} className='flex flex-col items-center justify-center'>
             <h2 className='text-2xl'>₹{data.amount}</h2>

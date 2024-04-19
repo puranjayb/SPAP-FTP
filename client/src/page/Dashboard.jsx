@@ -1,6 +1,7 @@
 import React from 'react'
 import Navbar from '../containers/Navbar'
 import OverviewCard from '../containers/OverviewCard'
+import ExpenseStatistics from '../containers/ExpenseStatistics'
 
 function Dashboard() {
   return (
@@ -9,8 +10,9 @@ function Dashboard() {
         <Navbar />
       </div>
       <div className='flex justify-between pt-6'>
-        <div className='flex flex-col'>
+        <div className='flex flex-col gap-8'>
           <OverviewCard />
+          <ExpenseStatistics />
         </div>
       </div>
     </section>
