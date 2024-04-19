@@ -4,7 +4,15 @@ addExpense = (req, res) => {
     const { category, amount, description } = req.body;
     
     connection.query(
-
+        `INSERT INTO finances (category, amount, description) VALUES (?, ?, ?);`,
+        [category, -1 * amount, description],
+        (err, results) => {
+            if (err) {
+                console.error(`Error adding expense:`, err);
+                res.status(500).send(`Internal Server Error`);
+            } else {
+                res.status(201).json(results);
+            }
         }
     );
 }
