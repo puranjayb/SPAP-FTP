@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import "./Login.css";
 
+
 function Register() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
