@@ -1,6 +1,9 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
 const User = require('../models/userModel');
+
+dotenv.config();
 
 exports.register = async (req, res) => {
     try {
@@ -42,22 +45,37 @@ exports.register = async (req, res) => {
     }
 };
 
-
 exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
+
+        // Check if email and password are provided
+        if (!email || !password) {
+            return res.status(400).json({ error: "Please provide email and password." });
+        }
+
+        // Find user by email
         const user = await User.findOne({ where: { email } });
+        console.log("Fetched User:", user);
+        
+        // Check if user exists
         if (!user) {
-            return res.status(400).json({ error: 'User not found' });
+            return res.status(404).json({ error: 'User not found' });
         }
-        const validPassword = await bcrypt.compare(password, user.password);
+
+        // Check if password is valid
+        const validPassword = bcrypt.compare(password, user.password);
+        console.log("Password Comparison Result:", validPassword);
         if (!validPassword) {
-            return res.status(400).json({ error: 'Invalid password' });
+            return res.status(401).json({ error: 'Invalid email or password' });
         }
+
+        // Generate and return JWT token
         const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
         res.status(200).json({ token });
     } catch (error) {
-        res.status(400).json({ error });
+        console.error("Error in login:", error);
+        res.status(500).json({ error: "Internal server error" });
     }
 };
 
