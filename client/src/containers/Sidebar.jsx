@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { links } from '../dataList/sidebarLinks'
@@ -6,6 +6,10 @@ import { links } from '../dataList/sidebarLinks'
 import { faDoorOpen, faGear } from '@fortawesome/free-solid-svg-icons';
 
 function Sidebar() {
+  useEffect(() => {
+
+  }, [])
+
   return (
     <section className='w-[15rem] h-screen fixed left-0 bg-[#0C142C] flex flex-col justify-between px-5 py-8 text-[#58637F]'>
       <div className='flex flex-col gap-10'>
