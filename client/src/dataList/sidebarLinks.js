@@ -4,6 +4,7 @@ import {
   faInfoCircle,
   faEnvelope,
   faSignInAlt,
+  faRegistered,
 } from "@fortawesome/free-solid-svg-icons";
 
 export const links = [
@@ -32,4 +33,9 @@ export const links = [
     path: "/login",
     icon: faSignInAlt,
   },
+  {
+    title: "Register",
+    path: "/register",
+    icon: faRegistered,
+  }
 ];
