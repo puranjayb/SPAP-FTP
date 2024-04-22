@@ -13,11 +13,8 @@
     "@fortawesome/fontawesome-svg-core": "^6.5.2",
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@fortawesome/react-fontawesome": "^0.2.0",
-    "@radix-ui/react-label": "^2.0.2",
-    "@tabler/icons-react": "^3.2.0",
-    "clsx": "^2.1.0",
-    "framer-motion": "^11.1.7",
     "react": "^18.2.0",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.22.3",
     "tailwind-merge": "^2.3.0"
