@@ -28,14 +28,4 @@ export const links = [
     path: "/contact-us",
     icon: faEnvelope,
   },
-  {
-    title: "Login",
-    path: "/login",
-    icon: faSignInAlt,
-  },
-  {
-    title: "Register",
-    path: "/register",
-    icon: faUserPlus,
-  }
 ];
