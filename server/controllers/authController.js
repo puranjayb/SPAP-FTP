@@ -6,6 +6,8 @@ const User = require("../models/userModel");
 
 dotenv.config();
 
+const salt = bcrypt.genSaltSync(10);
+
 exports.register = async (req, res) => {
   try {
     const { username, email, password } = req.body;
@@ -32,27 +34,14 @@ exports.register = async (req, res) => {
     }
 
     // Create new user
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = bcrypt.hashSync(password, salt);
     const newUser = await User.create({
       username,
       email,
       password: hashedPassword,
     });
 
-    // Generate token
-    const token = jwt.sign({ id: newUser.id }, process.env.JWT_SECRET);
-
-    // Return success response with token and user information
-    res
-      .status(201)
-      .json({
-        token,
-        user: {
-          id: newUser.id,
-          username: newUser.username,
-          email: newUser.email,
-        },
-      });
+    res.status(201).json(newUser);
   } catch (error) {
     console.error("Error in registration:", error);
     res.status(500).json({ error: "Internal server error." });
@@ -60,83 +49,67 @@ exports.register = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-    try {
-      const { email, password } = req.body;
-  
-      // Check if email and password are provided
-      if (!email || !password) {
-        return res.status(400).json({ error: "Please provide email and password." });
-      }
-  
-      // Find user by email
-      const user = await User.findOne({ where: { email } });
-      console.log("Fetched User:", user);
-  
-      // Check if user exists
-      if (!user) {
-        return res.status(404).json({ error: "User not found" });
-      }
-  
-      // Check if password is valid
-      const validPassword = await bcrypt.compare(password, user.password);
-      console.log("Password Comparison Result:", validPassword);
-      if (!validPassword) {
-        return res.status(401).json({ error: "Invalid email or password" });
-      }
-  
-      const tokenPayload = {
-        id: user.id,
-        email: user.email,
-        username: user.username,
-      };
-  
-      // Generate and return JWT token
-      const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, {});
-  
-      // Set token as a cookie
-      res.cookie("token", token, { httpOnly: true, secure: true }).json({
-        token,
-        message: "User logged in",
-        username: user.username,
-        email: user.email,
-        id: user.id,
-      });
-    } catch (error) {
-      console.error("Error in login:", error);
-      res.status(500).json({ error: "Internal server error" });
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ error: "Please provide email and password." });
     }
-  };  
+
+    const user = await User.findOne({where: { email }});
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const validPassword = bcrypt.compareSync(password, user.password);
+    if (!validPassword) {
+      return res.status(401).json({ error: "Invalid email or password" });
+    }
+
+    const tokenPayload = {
+      id: user.id,
+      email: user.email,
+      username: user.username,
+    };
+
+    try {
+    const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, {});
+    res.cookie("token", token, { httpOnly: true, secure: true }).json({
+      message: "User logged in",
+      username: user.username,
+      email: user.email,
+      id: user.id,
+    });
+  } catch (error) {
+    console.error("Error in login:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
 
 exports.profile = async (req, res) => {
-    try {
-        const {token} = req.cookies;
-        if (!token) {
-            return res.status(401).json({ error: "Unauthorized" });
-        }
-
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const user = await User.findOne({ where: { id: decoded.id } });
-
-        if (!user) {
-            return res.status(404).json({ error: "User not found" });
-        }
-
-        res.json({
-            id: user.id,
-            username: user.username,
-            email: user.email,
-        });
-    } catch (error) {
-        console.error("Error in profile:", error);
-        res.status(500).json({ error: "Internal server error" });
+  try {
+    const { token } = req.cookies;
+    if (!token) {
+      return res.status(401).json({ error: "Unauthorized" });
     }
+
+    jwt.verify(token, process.env.JWT_SECRET, {}, (err, decoded) => {
+      if (err) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+
+      res.json(decoded);
+    });
+  } catch (error) {
+    console.error("Error in profile:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 }
 
 exports.logout = async (req, res) => {
-    try {
-        res.clearCookie("token").json({ message: "User logged out" });
-    } catch (error) {
-        console.error("Error in logout:", error);
-        res.status(500).json({ error: "Internal server error" });
-    }
+  try {
+    res.clearCookie("token").json({ message: "User logged out" });
+  } catch (error) {
+    console.error("Error in logout:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 };
