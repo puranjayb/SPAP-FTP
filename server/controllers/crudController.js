@@ -1,11 +1,19 @@
 const connection = require(`../config/dbConfig`);
+const jwt = require(`jsonwebtoken`);
 
 addExpense = (req, res) => {
     const { category, amount, description } = req.body;
+    const { token } = req.cookies;
+    
+    if (!token) {
+        return res.status(401).send(`Unauthorized`);
+    }
+
+    const user_id = jwt.verify(token, process.env.JWT_SECRET).id;
     
     connection.query(
-        `INSERT INTO finances (category, amount, description) VALUES (?, ?, ?);`,
-        [category, -1 * amount, description],
+        `INSERT INTO finances (category, amount, description, user_id) VALUES (?, ?, ?, ?);`,
+        [category, -1 * amount, description, user_id],
         (err, results) => {
             if (err) {
                 console.error(`Error adding expense:`, err);

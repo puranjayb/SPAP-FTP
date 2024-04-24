@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const crudController = require('../controllers/crudController');
+const cookieParser = require('cookie-parser');
+
+router.use(cookieParser())
 
 router.post('/addExpense', crudController.addExpense);
 router.post('/addIncome', crudController.addIncome);

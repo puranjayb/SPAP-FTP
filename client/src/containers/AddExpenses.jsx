@@ -17,7 +17,8 @@ function AddExpenses() {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
+      credentials: 'include'
     })
       .then(() => {
         setAmount('')
@@ -69,6 +70,7 @@ function AddExpenses() {
             value={category}
             onChange={(e) => setCategory(e.target.value)}
           >
+            <option value="category">Category</option>
             <option value="youOwe">You owe</option>
             <option value="youGetBack">You get back</option>
           </select>
