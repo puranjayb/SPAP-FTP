@@ -14,11 +14,11 @@ function Sidebar() {
       credentials: 'include'
     }).then(response => {
       response.json().then(data => {
-        setUserInfo(data)
-        console.log(data)
-      })
-    })
-  }, [userInfo])
+        setUserInfo(data);  
+      });
+    });
+  }, []);
+  
 
   const logoutUser = () => {
     fetch('http://localhost:3000/auth/logout', {
@@ -47,7 +47,7 @@ function Sidebar() {
           </div>
           <div className='text-[#B7BAC1] font-semibold'>
             <p className='text-xs'>Hey,</p>
-            <p>Tachin Sendulkar</p>
+            <p>{username ? userInfo.username : "Guest"}</p>
           </div>
         </div>
 

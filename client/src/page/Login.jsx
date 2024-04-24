@@ -35,11 +35,8 @@ function Login() {
   
   const handleLogin = async (e) => {
     e.preventDefault();
-    console.log("Logging in...");
     const tokenData = await loginUser({ email: username, password });
-    console.log("Token Data:", tokenData);
     if (tokenData && tokenData.token) {
-      console.log("Login successful, Token:", tokenData.token);
       setCanRedirect(true);
     }
   };  
