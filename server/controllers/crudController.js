@@ -46,6 +46,45 @@ addIncome = (req, res) => {
   );
 };
 
+getAll = (req, res) => {
+  const { token } = req.cookies;
+  if (!token) {
+    return res.status(401).send(`Unauthorized`);
+  }
+
+  const user_id = jwt.verify(token, process.env.JWT_SECRET).id;
+
+  connection.query(
+    `SELECT * FROM finances WHERE user_id = ?;`,
+    [user_id],
+    (err, results) => {
+      if (err) {
+        console.error(`Error getting all expenses:`, err);
+        res.status(500).send(`Internal Server Error`);
+      } else {
+        res.status(200).json(results);
+      }
+    }
+  );
+};
+
+getUsers = (req, res) => {
+  const { token } = req.cookies;
+  if (!token) {
+    return res.status(401).send(`Unauthorized`);
+  }
+
+  connection.query(
+    `SELECT * FROM users;`,
+    (err, results) => {
+      if (err) {
+        throw err;
+      }
+      res.send(results);
+    }
+  );
+}
+
 getOneDayTotal = (req, res) => {
   connection.query(
     `SELECT
@@ -181,6 +220,8 @@ updateIncome = (req, res) => {
 module.exports = {
   addExpense,
   addIncome,
+  getAll,
+  getUsers,
   getOneDayTotal,
   getOneWeekTotal,
   getOneMonthTotal,
