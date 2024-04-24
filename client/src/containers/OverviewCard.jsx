@@ -1,6 +1,19 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 function OverviewCard() {
+  const [expenseList, setExpenseList] = useState([])
+
+  useEffect(() => {
+    fetch('http://localhost:3000/crud/getAll', {
+      credentials: 'include'
+    })
+      .then(response => {
+        response.json().then(data => {
+          setExpenseList(data)
+        })
+      })
+  }, [])
+
   const moneyData = [
     {
       title: 'Total Spend',
@@ -27,7 +40,7 @@ function OverviewCard() {
       <div className='flex justify-between gap-16'>
         {moneyData.map((data, index) => (
           <div key={index} className='flex flex-col items-center justify-center'>
-            <h2 className='text-2xl'>₹{data.amount}</h2>
+            <h2 className='text-2xl'>₹{ expenseList.reduce((acc, curr) => acc + curr.amount, 0) }</h2>
             <p className='text-xs font-semibold text-gray-500 mt-1'>{data.title}</p>
           </div>
         ))}

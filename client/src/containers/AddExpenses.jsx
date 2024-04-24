@@ -51,7 +51,7 @@ function AddExpenses() {
   }
 
   return (
-    <div className='w-[45rem] flex flex-col gap-6 p-5 text-gray-300 rounded-3xl shadow-xl bg-[#1C2949]'>
+    <div className='w-[70%] flex flex-col gap-6 p-5 text-gray-300 rounded-3xl shadow-xl bg-[#1C2949]'>
       <h1 className='text-2xl font-semibold'>Add Expenses</h1>
       <div className='flex justify-between'>
         <div>
