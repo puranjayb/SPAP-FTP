@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { FaArrowAltCircleDown, FaArrowAltCircleUp } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
 
 function TotalExpenses() {
   const [expenseList, setExpenseList] = useState([])
@@ -28,6 +29,29 @@ function TotalExpenses() {
     })
   }, [])
 
+  const deleteExpense = (idToDelete) => {
+    fetch('http://localhost:3000/crud/deleteByID', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ id: idToDelete }),
+      credentials: 'include'
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to delete expense');
+        }
+        // If deletion was successful, update the expenseList state
+        setExpenseList(prevExpenseList => prevExpenseList.filter(expense => expense.id !== idToDelete));
+      })
+      .catch(error => {
+        console.error('Error deleting expense:', error);
+        // Handle error appropriately
+      });
+  }
+
+
   return (
     <section className='relative w-full flex flex-col gap-3 p-5'>
       <h1 className='text-4xl font-semibold text-gray-200 text-center'>Total Expenses</h1>
@@ -38,19 +62,26 @@ function TotalExpenses() {
               <p className='flex justify-center items-center'>
                 {
                   expense.category === 'youOwe' ? (
-                    <FaArrowAltCircleUp className={`w-10 h-10 text-white ${expense.category === 'youOwe' ? "text-red-500" : "text-green-500"}`} />
+                    <FaArrowAltCircleUp className={`w-10 h-10 ${expense.category === 'youOwe' ? "text-red-500" : "text-green-500"}`} />
                   ) : (
-                    <FaArrowAltCircleDown className={`w-10 h-10 text-white ${expense.category === 'youOwe' ? "text-red-500" : "text-green-500"}`} />
+                    <FaArrowAltCircleDown className={`w-10 h-10 ${expense.category === 'youOwe' ? "text-red-500" : "text-green-500"}`} />
                   )}
               </p>
 
               <div className={`flex gap-5 font-medium text-lg ${expense.category === 'youOwe' ? "text-red-500" : "text-green-500"}`}>
                 <p>{expense.description}</p>
-                <p>{expense.category === "youOwe" ? "You  owe" : "You get back"}</p>
+                <p>{expense.category === "youOwe" ? "You owe" : "You get back"}</p>
               </div>
 
               <div className={`${expense.category === 'youOwe' ? "text-red-500" : "text-green-500"}`}>
                 <p className='text-xl font-semibold'>{expense.amount}</p>
+              </div>
+
+              <div>
+                <MdDelete
+                  className='w-8 h-8 p-1 text-red-500 cursor-pointer hover:bg-red-500 hover:bg-opacity-30 rounded-full'
+                  onClick={() => deleteExpense(expense.id)}
+                />
               </div>
             </div>
           ))}
