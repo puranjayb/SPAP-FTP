@@ -12,20 +12,42 @@ function AddExpenses() {
       category
     }
 
-    fetch('http://localhost:3000/crud/addExpense', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data),
-      credentials: 'include'
-    })
-      .then(() => {
-        setAmount('')
-        setDescription('')
-        setCategory('')
-      })
-      .catch((err) => console.error(err))
+    if (!data.amount || !data.description || !data.category) {
+      alert('All fields are required')
+      return
+    } else {
+      if (category === 'youOwe') {
+        fetch('http://localhost:3000/crud/addExpense', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data),
+          credentials: 'include'
+        })
+          .then(() => {
+            setAmount('')
+            setDescription('')
+            setCategory('')
+          })
+          .catch((err) => console.error(err))
+      } else if (category === 'youGetBack') {
+        fetch('http://localhost:3000/crud/addIncome', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data),
+          credentials: 'include'
+        })
+          .then(() => {
+            setAmount('')
+            setDescription('')
+            setCategory('')
+          })
+          .catch((err) => console.error(err))
+      }
+    }
   }
 
   return (
